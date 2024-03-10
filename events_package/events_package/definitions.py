@@ -3,7 +3,6 @@ from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import pickle
 import scienceplots
 from scipy.optimize import curve_fit
 from xgboost import Booster
@@ -240,6 +239,7 @@ def plot_corelation(Y_test, Y_pred, density=True, log_density=True, plot_line=Tr
         plt.show()
 
 
+####################
 def remove_doublets(events_list):
     """For every event number which repeats more than once, only keep event with highest total ET in both layers,
     remove all other events with the same event number"""
@@ -263,6 +263,9 @@ def remove_doublets(events_list):
         indices_to_remove.update(set(indices_set) - {max_index})
 
     return [event for i, event in enumerate(events_list) if i not in indices_to_remove]
+
+
+#####################
 
 
 def count_nodes(model):
