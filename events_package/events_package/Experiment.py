@@ -1,22 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import pickle
 from sklearn.metrics import mean_squared_error
 import xgboost as xgb
 from xgboost import XGBRegressor
 
-import events_package.definitions as ed
-from events_package.cfig import Config
+import events_package.utils as utils
+from events_package.config import Config
 
 package_ver = "5.0"
-# added logarithmic weights calculation for barycenter calculation
-# fixed data reshape by creating ndarray
-# 1.3 - optimized calculate_z_barycenter function, speed up is about a factor of 2
-# improved formatting
-# 2.0 - Added new class for 'full layer' data, it includes psb, 3 layers of ECAL and 1 of HCAL
-# 3.0 - Completely different approach with Event_Dataset class relying on pandas dataframe
-# 4.0 - Added Experiment class
 # 5.0 - Changed Experiment class such that it uses configuration class, it does no longer need metaclass
 
 
@@ -161,13 +153,13 @@ class Experiment:
         return f"Instance of Experiment class with {self.length} events"
 
     def __copy__(self):
-        # Create a new instance of the class with copied data
+        """Create a new instance of the class with copied data"""
         new_instance = Experiment(self.dataset.copy())
         return new_instance
 
     def set_noise_thresholds(self, thresholds_dict):
-        """Changes self.noise_thresholds to a new value. Inut should be a dictionary for example:
-        {'psb': 100, ...}"""
+        """Changes self.noise_thresholds to a new value. Input should be a dictionary for example:
+        {'psb': 100, 'emb1': 50, ...}"""
         self.noise_thresholds = thresholds_dict
 
     def add_tot_layers_et(self):
@@ -225,7 +217,7 @@ class Experiment:
         self.dataset = self.dataset[mask].reset_index(drop=True)
 
     def et_cut(self, et_threshold=0, data="all"):
-        """Delete events with true et lover than et_threshold. Data can be all, training or testing."""
+        """Delete events with abs(true et) lower than et_threshold. Data can be all, training or testing."""
         if data == "all":
             mask = self.dataset["et"] >= et_threshold
             self.dataset = self.dataset = self.dataset.loc[mask]
@@ -242,7 +234,7 @@ class Experiment:
             raise ValueError("Invalid value for 'data' parameter")
 
     def z_cut(self, z_threshold=130, data="all"):
-        """Delete events with true z lover than z_threshold. Data can be all, training or testing."""
+        """Delete events with abs(true z) lower than z_threshold. Data can be all, training or testing."""
         if data == "all":
             mask = np.abs(self.dataset["z"]) <= z_threshold
             self.dataset = self.dataset.loc[mask]
@@ -370,7 +362,7 @@ class Experiment:
                 ]
 
                 if nodes_info:
-                    values_toappend.append(ed.count_nodes(self.model))
+                    values_toappend.append(utils.count_nodes(self.model))
 
                 column_values.append(values_toappend)
 
@@ -536,11 +528,11 @@ class Experiment:
         eta_emb1 = self.dataset["emb1_eta"].values[index]
         eta_emb2 = self.dataset["emb2_eta"].values[index]
 
-        R_emb1 = ed.R_emb1(eta_emb1)
-        R_emb2 = ed.R_emb2(eta_emb2)
+        R_emb1 = utils.R_emb1(eta_emb1)
+        R_emb2 = utils.R_emb2(eta_emb2)
 
-        theta_emb1 = ed.eta_to_theta(eta_emb1)
-        theta_emb2 = ed.eta_to_theta(eta_emb2)
+        theta_emb1 = utils.eta_to_theta(eta_emb1)
+        theta_emb2 = utils.eta_to_theta(eta_emb2)
 
         z_l1 = R_emb1 / np.tan(theta_emb1)
         z_l2 = R_emb2 / np.tan(theta_emb2)
@@ -611,11 +603,11 @@ class Experiment:
         eta_l1 = self.barycenter_emb1(linear_weights, w_0, index=index)[0]
         eta_l2 = self.barycenter_emb2(linear_weights, w_0, index=index)[0]
 
-        R_l1 = ed.R_emb1(eta_l1)
-        R_l2 = ed.R_emb2(eta_l2)
+        R_l1 = utils.R_emb1(eta_l1)
+        R_l2 = utils.R_emb2(eta_l2)
 
-        theta_l1 = ed.eta_to_theta(eta_l1)
-        theta_l2 = ed.eta_to_theta(eta_l2)
+        theta_l1 = utils.eta_to_theta(eta_l1)
+        theta_l2 = utils.eta_to_theta(eta_l2)
 
         z_l1 = R_l1 / np.tan(theta_l1)
         z_l2 = R_l2 / np.tan(theta_l2)
