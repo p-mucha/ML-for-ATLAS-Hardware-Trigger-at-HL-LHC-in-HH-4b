@@ -437,8 +437,9 @@ class Experiment:
         plt.xlabel("eta")
         plt.ylabel("phi")
         plt.title("Layer " + layer + f"; Event NO: {event_no}; Z = {self.z[index]:.2f}")
-        plt.imshow(data, cmap="viridis", interpolation="nearest", origin="upper")
-        plt.colorbar()
+        plt.imshow(data, cmap="viridis", interpolation=None, origin="upper")
+        colorbar = plt.colorbar()
+        colorbar.set_label('Energy [MeV]')  # Adding caption to colorbar
 
         # Modify the plt.xticks line to handle every second eta tick for 'emb1'
         if layer == "emb1":
@@ -450,6 +451,7 @@ class Experiment:
         plt.show()
 
     def generate_plot_methods(self):
+        """Generate methods for plotting layers, for example plot_emb1, plot_emb2, etc."""
         for layer in self.layers:
             method_name = f"plot_{layer}"
 
@@ -508,9 +510,7 @@ class Experiment:
             ax.set_title(
                 "Layer " + layer + f"; Event NO: {event_no}; Z = {self.z[index]:.2f}"
             )
-            img = ax.imshow(
-                data, cmap="viridis", interpolation="nearest", origin="upper"
-            )
+            img = ax.imshow(data, cmap="viridis", interpolation=None, origin="upper")
             ax.set_xticks(np.arange(len(eta_ticks)))
             ax.set_xticklabels(eta_ticks)
             ax.set_yticks(np.arange(len(phi_ticks)))
