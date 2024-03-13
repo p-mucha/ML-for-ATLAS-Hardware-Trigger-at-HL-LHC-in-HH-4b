@@ -338,7 +338,7 @@ class Experiment:
                 "X_train is not set. Please set X_train before proceeding."
             )
 
-        self.model = XGBRegressor(**params)
+        self.model = XGBRegressor(**params, random_state=21)
         self.model.fit(self.X_train, self.y_train)
 
         self.y_pred = self.model.predict(self.X_test)

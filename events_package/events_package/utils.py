@@ -399,6 +399,7 @@ def plot_avg_old(
             xerr=[x_points - x_range_low, x_range_high - x_points],
             yerr=vertical_uncertainty,
             fmt=".",
+            color='k',
             label=f"({interval}-interval)",
         )
 
