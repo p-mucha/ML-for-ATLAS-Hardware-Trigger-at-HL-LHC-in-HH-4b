@@ -1,9 +1,16 @@
+import logging
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error
+import sys
 import xgboost as xgb
 from xgboost import XGBRegressor
+
+# Configure logger to output to stdout
+logging.basicConfig(
+    stream=sys.stdout, level=logging.INFO, format="%(levelname)s: %(message)s"
+)
 
 import events_package.utils as utils
 from events_package.config import Config
@@ -50,6 +57,8 @@ class LabeledDataFrame:
 
 
 class Experiment:
+    __version__ = package_ver
+
     def __init__(self, dataframe, config):
         if not isinstance(config, Config):
             raise ValueError("configuration should be an object of the Config class")
@@ -276,6 +285,25 @@ class Experiment:
 
         self.is_shuffled = True
 
+    def standard_procedure(self, repeats=11):
+        self.remove_duplicates()
+        logging.info("Removed duplicates")
+
+        self.denoisify()
+        logging.info("Denoisified the dataset")
+
+        self.shuffle_dataset(repeats=repeats)
+        logging.info("Shuffled dataset")
+
+        logging.info(f"Number of events after removing duplicates: {self.length}")
+
+        mask = self.tot_layers_et() > 0
+        self.remove_events(mask=mask)
+        logging.info("Removed events with 0 energy in layers after denoisifying")
+        logging.info(
+            f"Number of events after removing 0 energy (in calorimeters) events: {self.length}"
+        )
+
     def train_test_split(self, get_X, get_Y=None, test_size=0.2, shuffle=False):
         """
         Splits dataset into training and testing dataset, creating training_dataset and testing_dataset attributes of the object.
@@ -439,7 +467,7 @@ class Experiment:
         plt.title("Layer " + layer + f"; Event NO: {event_no}; Z = {self.z[index]:.2f}")
         plt.imshow(data, cmap="viridis", interpolation=None, origin="upper")
         colorbar = plt.colorbar()
-        colorbar.set_label('Energy [MeV]')  # Adding caption to colorbar
+        colorbar.set_label("Energy [MeV]")  # Adding caption to colorbar
 
         # Modify the plt.xticks line to handle every second eta tick for 'emb1'
         if layer == "emb1":
@@ -469,6 +497,7 @@ class Experiment:
             )
 
     def plot_layers(self, index):
+        """plots multiple layers as a single plot"""
         fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(18, 12))
 
         for i, layer in enumerate(self.layers):

@@ -340,7 +340,7 @@ def fold_list_2d(input_array):
     return output_array
 
 
-def plot_avg(
+def plot_avg_old(
     x_values,
     y_values,
     interval=1000,
@@ -352,6 +352,7 @@ def plot_avg(
     ylim=None,
     return_values=True,
     return_x_u=False,
+    plot=True,
 ):
     indices = np.argsort(x_values)
     x_sorted = x_values[indices]
@@ -390,31 +391,32 @@ def plot_avg(
     x_range_high = np.array(x_range_high)
     vertical_uncertainty = np.array(vertical_uncertainty)
 
-    plt.figure(figsize=(10, 6))
-    plt.errorbar(
-        x_points,
-        y_avg,
-        xerr=[x_points - x_range_low, x_range_high - x_points],
-        yerr=vertical_uncertainty,
-        fmt=".",
-        label=f"({interval}-interval)",
-    )
+    if plot:
+        plt.figure(figsize=(10, 6))
+        plt.errorbar(
+            x_points,
+            y_avg,
+            xerr=[x_points - x_range_low, x_range_high - x_points],
+            yerr=vertical_uncertainty,
+            fmt=".",
+            label=f"({interval}-interval)",
+        )
 
-    if xlim is not None:
-        plt.xlim(xlim)
-    if ylim is not None:
-        plt.ylim(ylim)
+        if xlim is not None:
+            plt.xlim(xlim)
+        if ylim is not None:
+            plt.ylim(ylim)
 
-    plt.xlabel(xlabel)
+        plt.xlabel(xlabel)
 
-    if ylabel is not None:
-        plt.ylabel(ylabel)
-    else:
-        plt.ylabel("Absolute Errors (in z) [mm]")
+        if ylabel is not None:
+            plt.ylabel(ylabel)
+        else:
+            plt.ylabel("Absolute Errors (in z) [mm]")
 
-    plt.legend()
-    plt.grid()
-    plt.show()
+        plt.legend()
+        plt.grid()
+        plt.show()
 
     if return_values:
         if return_x_u:
@@ -427,7 +429,7 @@ def plot_avg(
         else:
             return x_points, y_avg, vertical_uncertainty
 ########################################################################
-def plot_avg_new(
+def plot_avg(
     x_values,
     y_values,
     interval=1000,
@@ -439,6 +441,7 @@ def plot_avg_new(
     ylim=None,
     return_values=True,
     return_x_u=False,
+    plot=True,
 ):
     indices = np.argsort(x_values)
     x_sorted = x_values[indices]
@@ -478,31 +481,32 @@ def plot_avg_new(
     x_range_high = np.array(x_range_high)
     vertical_uncertainty = np.array(vertical_uncertainty)
 
-    plt.figure(figsize=(10, 6))
-    plt.errorbar(
-        x_points,
-        y_avg,
-        xerr=[x_points - x_range_low, x_range_high - x_points],
-        yerr=vertical_uncertainty,
-        fmt=".",
-        label=f"({interval}-interval)",
-    )
+    if plot:
+        plt.figure(figsize=(10, 6))
+        plt.errorbar(
+            x_points,
+            y_avg,
+            xerr=[x_points - x_range_low, x_range_high - x_points],
+            yerr=vertical_uncertainty,
+            fmt=".",
+            label=f"({interval}-interval)",
+        )
 
-    if xlim is not None:
-        plt.xlim(xlim)
-    if ylim is not None:
-        plt.ylim(ylim)
+        if xlim is not None:
+            plt.xlim(xlim)
+        if ylim is not None:
+            plt.ylim(ylim)
 
-    plt.xlabel(xlabel)
+        plt.xlabel(xlabel)
 
-    if ylabel is not None:
-        plt.ylabel(ylabel)
-    else:
-        plt.ylabel("Absolute Errors (in z) [mm]")
+        if ylabel is not None:
+            plt.ylabel(ylabel)
+        else:
+            plt.ylabel("Absolute Errors (in z) [mm]")
 
-    plt.legend()
-    plt.grid()
-    plt.show()
+        plt.legend()
+        plt.grid()
+        plt.show()
 
     if return_values:
         if return_x_u:
