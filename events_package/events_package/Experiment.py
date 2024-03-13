@@ -346,7 +346,7 @@ class Experiment:
         self.y_pred = self.model.predict(dtest)
 
         mse = mean_squared_error(self.y_test, self.y_pred)
-        print(f"Mean Squared Error: {mse}")
+        logging.info(f"Trained XGBoost model; mean squared error: {mse}")
         return mse
 
     def train_xgboost_model2(self, params):

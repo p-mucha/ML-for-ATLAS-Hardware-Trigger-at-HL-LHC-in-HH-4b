@@ -83,6 +83,7 @@ class ExperimentTest(unittest.TestCase):
         # there is only one row with event_no == 13
         # there are 24 rows in dataset (1 less than the original 25)
         # the value of total energy from deleted event does not occur in data
+        # note: tot_layers_et method must be working to test this last thing
         self.assertEqual(len(np.where(self.example_experiment.event_no == 13)[0]), 1)
         self.assertEqual(self.example_experiment.length, 24)
 
