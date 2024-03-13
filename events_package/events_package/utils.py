@@ -309,6 +309,10 @@ def fold_list(input_list):
 
 
 def fold_list_2d(input_array):
+    # handle list input
+    if isinstance(input_array, list):
+        input_array = np.array(input_array)
+
     n = input_array.shape[1]
     height = input_array.shape[0]
 
@@ -399,7 +403,7 @@ def plot_avg_old(
             xerr=[x_points - x_range_low, x_range_high - x_points],
             yerr=vertical_uncertainty,
             fmt=".",
-            color='k',
+            color="k",
             label=f"({interval}-interval)",
         )
 
@@ -429,6 +433,8 @@ def plot_avg_old(
             )
         else:
             return x_points, y_avg, vertical_uncertainty
+
+
 ########################################################################
 def plot_avg(
     x_values,
@@ -467,10 +473,9 @@ def plot_avg(
         if rms is False:
             y_avg.append(y_batch.mean())
         else:
-           y_avg.append(np.sqrt( (np.mean(y_batch**2)) ))
+            y_avg.append(np.sqrt((np.mean(y_batch**2))))
 
         x_points.append(x_batch.mean())
-        
 
         x_range_low.append(x_batch.min())
         x_range_high.append(x_batch.max())
@@ -519,6 +524,7 @@ def plot_avg(
             )
         else:
             return x_points, y_avg, vertical_uncertainty
+
 
 #########################################################################
 def gaussian(x, amplitude, mean, stddev):

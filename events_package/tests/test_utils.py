@@ -15,6 +15,52 @@ class UtilsTest(unittest.TestCase):
         self.values_y = np.array([8, 14, 9, 7, 11, 11, 10, 7, 10, 15, 14, 12])
         self.values_x = np.arange(len(self.values_y))
 
+        self.example_2d_array = np.array([[1, 2, 3, 4, 5], [0, 7, 8, 7, 8]])
+        self.example_2d_list = [[8, 5, 7, 2, 1], [5, 7, 3, 7, 1]]
+
+        self.example_2d_array2 = np.array([[1, 2, 4, 5], [0, 7, 7, 8]])
+        self.example_2d_list2 = [[8, 5, 2, 1], [5, 7, 7, 1]]
+
+    def test_fold_list_2d(self):
+        """
+        fold_list_2d is supposed to return difference between elements symmetric
+        with respect to middle. If there is odd number of columns, then first column of output is the
+        middle column.
+        """
+        arr1 = np.array([[3.0, 2.0, 4.0], [8.0, 0.0, 8.0]])
+        arr2 = utils.fold_list_2d(self.example_2d_array)
+        np.testing.assert_almost_equal(
+            arr1,
+            arr2,
+            decimal=4,
+        )
+
+        arr3 = np.array([[7.0, -3.0, -7.0], [3.0, 0.0, -4.0]])
+        arr4 = utils.fold_list_2d(self.example_2d_list)
+
+        np.testing.assert_almost_equal(
+            arr3,
+            arr4,
+            decimal=4,
+        )
+
+        arr5 = np.array([[2.0, 4.0], [0.0, 8.0]])
+        arr6 = utils.fold_list_2d(self.example_2d_array2)
+        np.testing.assert_almost_equal(
+            arr5,
+            arr6,
+            decimal=4,
+        )
+
+        arr7 = np.array([[-3.0, -7.0], [0.0, -4.0]])
+        arr8 = utils.fold_list_2d(self.example_2d_list2)
+
+        np.testing.assert_almost_equal(
+            arr7,
+            arr8,
+            decimal=4,
+        )
+
     def test_plot_avg(self):
 
         # the code below should split data into batches and from each calculate RMS
