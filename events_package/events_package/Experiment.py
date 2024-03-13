@@ -332,24 +332,7 @@ class Experiment:
 
         self.is_split = True
 
-    def train_xgboost_model(self, params, num_rounds):
-        if self.X_train is None:
-            raise ValueError(
-                "X_train is not set. Please set X_train before proceeding."
-            )
-
-        dtrain = xgb.DMatrix(self.X_train, label=self.y_train)
-        dtest = xgb.DMatrix(self.X_test, label=self.y_test)
-
-        self.model = xgb.train(params, dtrain, num_rounds)
-
-        self.y_pred = self.model.predict(dtest)
-
-        mse = mean_squared_error(self.y_test, self.y_pred)
-        logging.info(f"Trained XGBoost model; mean squared error: {mse}")
-        return mse
-
-    def train_xgboost_model2(self, params):
+    def train_xgboost_model(self, params):
         if self.X_train is None:
             raise ValueError(
                 "X_train is not set. Please set X_train before proceeding."
@@ -361,7 +344,7 @@ class Experiment:
         self.y_pred = self.model.predict(self.X_test)
 
         mse = mean_squared_error(self.y_test, self.y_pred)
-        print(f"Mean Squared Error: {mse}")
+        logging.info(f"Trained XGBoost model; mean squared error: {mse}")
         return mse
 
     def test_model(self):
