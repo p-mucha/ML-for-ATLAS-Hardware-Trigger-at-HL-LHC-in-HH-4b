@@ -1,4 +1,5 @@
 import logging
+from matplotlib.colors import Normalize
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -448,7 +449,9 @@ class Experiment:
         plt.xlabel("eta")
         plt.ylabel("phi")
         plt.title(
-            "Layer: " + layer + f"; Event NO: {int(event_no)}; Z = {self.z[index]:.2f} [mm]"
+            "Layer: "
+            + layer
+            + f"; Event NO: {int(event_no)}; Z = {self.z[index]:.2f} [mm]"
         )
         plt.imshow(data, cmap="viridis", interpolation=None, origin="upper")
         colorbar = plt.colorbar()
