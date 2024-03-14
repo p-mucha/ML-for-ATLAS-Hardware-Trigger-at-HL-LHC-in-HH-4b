@@ -447,7 +447,9 @@ class Experiment:
         plt.rcdefaults()
         plt.xlabel("eta")
         plt.ylabel("phi")
-        plt.title("Layer " + layer + f"; Event NO: {event_no}; Z = {self.z[index]:.2f}")
+        plt.title(
+            "Layer: " + layer + f"; Event NO: {int(event_no)}; Z = {self.z[index]:.2f} [mm]"
+        )
         plt.imshow(data, cmap="viridis", interpolation=None, origin="upper")
         colorbar = plt.colorbar()
         colorbar.set_label("Energy [MeV]")  # Adding caption to colorbar
