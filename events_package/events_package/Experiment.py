@@ -175,7 +175,7 @@ class Experiment:
     def add_tot_layers_et(self):
         """adds a column to self.dataset, containing total energies in all layers"""
         if "tot_layers_et" in self.dataset.columns.values:
-            print("Total energies have already been added")
+            logging.info("Total energies have already been added, skipping.")
         else:
             df1 = pd.DataFrame({"tot_layers_et": self.tot_layers_et()})
             self.dataset = pd.concat([self.dataset, df1], axis=1)
@@ -353,7 +353,7 @@ class Experiment:
         dtest = xgb.DMatrix(self.X_test, label=self.y_test)
         self.y_pred = self.model.predict(dtest)
         mse = mean_squared_error(self.y_test, self.y_pred)
-        print(f"y_pred length: {len(self.y_pred)}, model tested, MSE: {mse}")
+        logging.info(f"y_pred length: {len(self.y_pred)}, model tested, MSE: {mse}")
 
     def xgboost_hyperparameter_scan(
         self, param_grid, num_rounds_grid, nodes_info=False
@@ -635,7 +635,7 @@ class Experiment:
 
     def add_barycenters(self, linear_weights=None, w_0=None):
         if "bary_emb1_eta" in self.dataset.columns.values:
-            print("Barycenters have already been added, skipping.")
+            logging.info("Barycenters have already been added, skipping.")
             return
         bary_emb1_eta = []
         bary_emb2_eta = []
@@ -672,7 +672,9 @@ class Experiment:
 
     def add_physics_object_type(self, typ):
         if "physics_object_type" in self.dataset.columns.values:
-            print("Physics object type has already been added to dataframe, skipping.")
+            logging.info(
+                "Physics object type has already been added to dataframe, skipping."
+            )
             return
 
         len = self.length
