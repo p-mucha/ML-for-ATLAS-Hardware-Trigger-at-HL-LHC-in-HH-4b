@@ -239,35 +239,6 @@ def plot_corelation(Y_test, Y_pred, density=True, log_density=True, plot_line=Tr
         plt.show()
 
 
-####################
-def remove_doublets(events_list):
-    """For every event number which repeats more than once, only keep event with highest total ET in both layers,
-    remove all other events with the same event number"""
-    index_dict = {}
-
-    for i, event in enumerate(events_list):
-        event_no = event.event_no
-        if event_no in index_dict:
-            index_dict[event_no].append(i)
-        else:
-            index_dict[event_no] = [i]
-
-    indices_to_remove = set()
-
-    for indices_set in (indices for indices in index_dict.values() if len(indices) > 1):
-        max_index = max(
-            indices_set,
-            key=lambda i: np.sum(events_list[i].l1_cells_ET)
-            + np.sum(events_list[i].l2_cells_ET),
-        )
-        indices_to_remove.update(set(indices_set) - {max_index})
-
-    return [event for i, event in enumerate(events_list) if i not in indices_to_remove]
-
-
-#####################
-
-
 def count_nodes(model):
     if isinstance(model, Booster):
         trees = model.trees_to_dataframe()
@@ -344,98 +315,6 @@ def fold_list_2d(input_array):
     return output_array
 
 
-def plot_avg_old(
-    x_values,
-    y_values,
-    interval=1000,
-    xlabel=None,
-    ylabel=None,
-    abs=True,
-    rms=False,
-    xlim=None,
-    ylim=None,
-    return_values=True,
-    return_x_u=False,
-    plot=True,
-):
-    indices = np.argsort(x_values)
-    x_sorted = x_values[indices]
-
-    if abs:
-        y_sorted = np.abs(y_values)[indices]
-    else:
-        y_sorted = y_values[indices]
-
-    df = pd.DataFrame({"x": x_sorted, "y": y_sorted})
-
-    y_avg = []
-    x_points = []
-    x_range_low = []
-    x_range_high = []
-    vertical_uncertainty = []
-
-    for batch in range(0, len(df), interval):
-        x_batch = df["x"].iloc[batch : batch + interval]
-        y_batch = df["y"].iloc[batch : batch + interval]
-
-        if rms is False:
-            x_points.append(x_batch.mean())
-        else:
-            x_points.append(np.sqrt(np.mean((x_batch**2))))
-
-        y_avg.append(y_batch.mean())
-
-        x_range_low.append(x_batch.min())
-        x_range_high.append(x_batch.max())
-
-        vertical_uncertainty.append(y_batch.std() / np.sqrt(len(y_batch)))
-
-    x_points = np.array(x_points)
-    x_range_low = np.array(x_range_low)
-    x_range_high = np.array(x_range_high)
-    vertical_uncertainty = np.array(vertical_uncertainty)
-
-    if plot:
-        plt.figure(figsize=(10, 6))
-        plt.errorbar(
-            x_points,
-            y_avg,
-            xerr=[x_points - x_range_low, x_range_high - x_points],
-            yerr=vertical_uncertainty,
-            fmt=".",
-            color="k",
-            label=f"({interval}-interval)",
-        )
-
-        if xlim is not None:
-            plt.xlim(xlim)
-        if ylim is not None:
-            plt.ylim(ylim)
-
-        plt.xlabel(xlabel)
-
-        if ylabel is not None:
-            plt.ylabel(ylabel)
-        else:
-            plt.ylabel("Absolute Errors (in z) [mm]")
-
-        plt.legend()
-        plt.grid()
-        plt.show()
-
-    if return_values:
-        if return_x_u:
-            return (
-                x_points,
-                y_avg,
-                [x_points - x_range_low, x_range_high - x_points],
-                vertical_uncertainty,
-            )
-        else:
-            return x_points, y_avg, vertical_uncertainty
-
-
-########################################################################
 def plot_avg(
     x_values,
     y_values,
