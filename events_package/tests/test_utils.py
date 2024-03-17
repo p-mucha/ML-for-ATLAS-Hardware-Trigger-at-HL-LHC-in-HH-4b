@@ -64,8 +64,8 @@ class UtilsTest(unittest.TestCase):
     def test_plot_avg(self):
 
         # the code below should split data into batches and from each calculate RMS
-        # for interval=5, there should be 3 batches: two first containing 5 values each and
-        # the last one containing 2 last values
+        # for interval=5, there should be 3 batches: two batch containing 2 points
+        # last two batches containing 5 points each
 
         x_e, y_e, x_u_e, u_e = utils.plot_avg(
             x_values=self.values_x,
@@ -78,13 +78,13 @@ class UtilsTest(unittest.TestCase):
             plot=False,
         )
 
-        self.assertAlmostEqual(y_e[0], 10.10940156488009, places=7)
-        self.assertAlmostEqual(y_e[1], 10.908712114635714, places=7)
-        self.assertAlmostEqual(y_e[2], 13.038404810405298, places=7)
+        self.assertAlmostEqual(y_e[0], 11.40175425099138, places=7)
+        self.assertAlmostEqual(y_e[1], 9.715966241192895, places=7)
+        self.assertAlmostEqual(y_e[2], 11.949895397031725, places=7)
 
-        self.assertAlmostEqual(x_e[0], 2.0, places=7)
-        self.assertAlmostEqual(x_e[1], 7.0, places=7)
-        self.assertAlmostEqual(x_e[2], 10.5, places=7)
+        self.assertAlmostEqual(x_e[0], 0.5, places=7)
+        self.assertAlmostEqual(x_e[1], 4.0, places=7)
+        self.assertAlmostEqual(x_e[2], 9.0, places=7)
 
         # in the example below, interval larger than entire data is chosen,
         # there are 12 data points but interval (batch size) is 15
@@ -106,7 +106,7 @@ class UtilsTest(unittest.TestCase):
         self.assertAlmostEqual(x_e[0], 5.5, places=7)
 
         # in the example below, interval is chosen such that there will be
-        # two batches: one containing 11 data points and one with just a single point
+        # two batches: one containing 1 data point and second with 11 data points
 
         x_e, y_e, x_u_e, u_e = utils.plot_avg(
             x_values=self.values_x,
@@ -119,11 +119,11 @@ class UtilsTest(unittest.TestCase):
             plot=False,
         )
 
-        self.assertAlmostEqual(y_e[0], 10.87950533634854, places=7)
-        self.assertAlmostEqual(y_e[1], 12.0, places=7)
+        self.assertAlmostEqual(y_e[0], 8.0, places=7)
+        self.assertAlmostEqual(y_e[1], 11.208762805785643, places=7)
 
-        self.assertAlmostEqual(x_e[0], 5.0, places=7)
-        self.assertAlmostEqual(x_e[1], 11.0, places=7)
+        self.assertAlmostEqual(x_e[0], 0.0, places=7)
+        self.assertAlmostEqual(x_e[1], 6.0, places=7)
 
 
 if __name__ == "__main__":

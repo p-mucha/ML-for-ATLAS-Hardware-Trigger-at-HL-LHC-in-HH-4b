@@ -337,7 +337,7 @@ def plot_avg(
     else:
         y_sorted = y_values[indices]
 
-    df = pd.DataFrame({"x": x_sorted, "y": y_sorted})
+    df = pd.DataFrame({"x": x_sorted[::-1], "y": y_sorted[::-1]})
 
     y_avg = []
     x_points = []
@@ -351,15 +351,30 @@ def plot_avg(
 
         if rms is False:
             y_avg.append(y_batch.mean())
+            vertical_uncertainty.append(y_batch.std() / np.sqrt(len(y_batch)))
+
         else:
-            y_avg.append(np.sqrt((np.mean(y_batch**2))))
+            #y_avg.append(np.sqrt((np.mean(y_batch**2))))
+            # uncertainty of RMS can be calculated:
+            # first we have some mean of squares, this mean (m) will
+            # have its uncertainty of mean (u), which is std / sqrt(N)
+            # then RMS is actually sqrt(m), so its uncertainty is propagated as
+            # u / (2 * sqrt(m))
+
+            m = (y_batch**2).mean()
+            u = (y_batch**2).std() / np.sqrt(len(y_batch))
+
+            new_u = u / (2 * np.sqrt(m))
+
+            y_avg.append(np.sqrt(m))
+            vertical_uncertainty.append(new_u)
 
         x_points.append(x_batch.mean())
 
         x_range_low.append(x_batch.min())
         x_range_high.append(x_batch.max())
 
-        vertical_uncertainty.append(y_batch.std() / np.sqrt(len(y_batch)))
+        
 
     x_points = np.array(x_points)
     x_range_low = np.array(x_range_low)
@@ -396,13 +411,13 @@ def plot_avg(
     if return_values:
         if return_x_u:
             return (
-                x_points,
-                y_avg,
-                [x_points - x_range_low, x_range_high - x_points],
-                vertical_uncertainty,
+                x_points[::-1],
+                y_avg[::-1],
+                [x_points - x_range_low, x_range_high - x_points][::-1],
+                vertical_uncertainty[::-1],
             )
         else:
-            return x_points, y_avg, vertical_uncertainty
+            return x_points[::-1], y_avg[::-1], vertical_uncertainty[::-1]
 
 
 #########################################################################
