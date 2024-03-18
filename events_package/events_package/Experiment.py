@@ -166,6 +166,21 @@ class Experiment:
         """Create a new instance of the class with copied data"""
         new_instance = Experiment(self.dataset.copy())
         return new_instance
+    
+    def __add__(self, other):
+        if isinstance(other, Experiment):
+            # connect datasets into a single dataset
+            full_df = pd.concat(
+                [self.dataset, other.dataset],
+                ignore_index=True,
+            )
+            return Experiment(full_df, config=self.config)
+        else:
+            raise TypeError("Unsupported operand type(s) for +: '{}' and '{}'".format(type(self), type(other)))
+        
+    def __radd__(self, other):
+        # Handle the case when self appears on the right side of the addition
+        return self.__add__(other)
 
     def set_noise_thresholds(self, thresholds_dict):
         """Changes self.noise_thresholds to a new value. Input should be a dictionary for example:

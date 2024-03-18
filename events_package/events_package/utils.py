@@ -412,7 +412,7 @@ def plot_avg(
             return (
                 x_points[::-1],
                 y_avg[::-1],
-                [x_points - x_range_low, x_range_high - x_points][::-1],
+                [(x_points - x_range_low)[::-1], (x_range_high - x_points)[::-1]],
                 vertical_uncertainty[::-1],
             )
         else:
