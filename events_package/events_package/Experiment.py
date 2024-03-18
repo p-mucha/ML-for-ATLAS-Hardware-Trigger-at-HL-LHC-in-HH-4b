@@ -333,16 +333,22 @@ class Experiment:
 
         self.is_split = True
 
-    def train_xgboost_model(self, params):
+    def train_xgboost_model(self, params, normalise=True):
         if self.X_train is None:
             raise ValueError(
                 "X_train is not set. Please set X_train before proceeding."
             )
 
         self.model = XGBRegressor(**params, random_state=21)
-        self.model.fit(self.X_train, self.y_train)
 
-        self.y_pred = self.model.predict(self.X_test)
+        if normalise:
+            u = self.y_train.std()
+        else:
+            u = 1
+
+        self.model.fit(self.X_train, self.y_train / u)
+
+        self.y_pred = self.model.predict(self.X_test) * u
 
         mse = mean_squared_error(self.y_test, self.y_pred)
         logging.info(f"Trained XGBoost model; mean squared error: {mse}")
@@ -350,15 +356,16 @@ class Experiment:
 
     def test_model(self):
         """Tests current self.model on self.X_test"""
-        dtest = xgb.DMatrix(self.X_test, label=self.y_test)
+        if self.y_test is None:
+            raise ValueError("y_test is not set. Please set y_test before proceeding.")
+
+        dtest = self.X_test
         self.y_pred = self.model.predict(dtest)
         mse = mean_squared_error(self.y_test, self.y_pred)
         logging.info(f"y_pred length: {len(self.y_pred)}, model tested, MSE: {mse}")
 
-    def xgboost_hyperparameter_scan(
-        self, param_grid, num_rounds_grid, nodes_info=False
-    ):
-        column_names = ["MSE", "Num_rounds"]
+    def xgboost_hyperparameter_scan(self, param_grid, nodes_info=False):
+        column_names = ["MSE"]
         for param in param_grid[0]:
             column_names.append(param)
 
@@ -366,17 +373,15 @@ class Experiment:
             column_names.append("Nodes NO")
 
         column_values = []
-        for num_rounds in num_rounds_grid:
-            for params in param_grid:
-                mse = self.train_xgboost_model(params, num_rounds)
-                values_toappend = [mse, num_rounds] + [
-                    params[param] for param in param_grid[0]
-                ]
 
-                if nodes_info:
-                    values_toappend.append(utils.count_nodes(self.model))
+        for params in param_grid:
+            mse = self.train_xgboost_model(params)
+            values_toappend = [mse] + [params[param] for param in param_grid[0]]
 
-                column_values.append(values_toappend)
+            if nodes_info:
+                values_toappend.append(utils.count_nodes(self.model))
+
+            column_values.append(values_toappend)
 
         return pd.DataFrame(column_values, columns=column_names)
 

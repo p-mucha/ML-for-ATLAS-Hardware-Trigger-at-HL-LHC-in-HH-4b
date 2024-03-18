@@ -354,7 +354,7 @@ def plot_avg(
             vertical_uncertainty.append(y_batch.std() / np.sqrt(len(y_batch)))
 
         else:
-            #y_avg.append(np.sqrt((np.mean(y_batch**2))))
+            # y_avg.append(np.sqrt((np.mean(y_batch**2))))
             # uncertainty of RMS can be calculated:
             # first we have some mean of squares, this mean (m) will
             # have its uncertainty of mean (u), which is std / sqrt(N)
@@ -374,8 +374,6 @@ def plot_avg(
         x_range_low.append(x_batch.min())
         x_range_high.append(x_batch.max())
 
-        
-
     x_points = np.array(x_points)
     x_range_low = np.array(x_range_low)
     x_range_high = np.array(x_range_high)
@@ -390,6 +388,7 @@ def plot_avg(
             yerr=vertical_uncertainty,
             fmt=".",
             label=f"({interval}-interval)",
+            color="black",
         )
 
         if xlim is not None:
