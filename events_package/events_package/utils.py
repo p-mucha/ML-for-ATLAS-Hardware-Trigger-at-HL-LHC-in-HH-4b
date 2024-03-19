@@ -321,6 +321,7 @@ def plot_avg(
     interval=1000,
     xlabel=None,
     ylabel=None,
+    title=None,
     abs=True,
     rms=False,
     xlim=None,
@@ -396,6 +397,7 @@ def plot_avg(
         if ylim is not None:
             plt.ylim(ylim)
 
+        plt.title(title)
         plt.xlabel(xlabel)
 
         if ylabel is not None:
