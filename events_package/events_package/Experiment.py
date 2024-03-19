@@ -166,7 +166,7 @@ class Experiment:
         """Create a new instance of the class with copied data"""
         new_instance = Experiment(self.dataset.copy())
         return new_instance
-    
+
     def __add__(self, other):
         if isinstance(other, Experiment):
             # connect datasets into a single dataset
@@ -176,8 +176,12 @@ class Experiment:
             )
             return Experiment(full_df, config=self.config)
         else:
-            raise TypeError("Unsupported operand type(s) for +: '{}' and '{}'".format(type(self), type(other)))
-        
+            raise TypeError(
+                "Unsupported operand type(s) for +: '{}' and '{}'".format(
+                    type(self), type(other)
+                )
+            )
+
     def __radd__(self, other):
         # Handle the case when self appears on the right side of the addition
         return self.__add__(other)
@@ -248,7 +252,7 @@ class Experiment:
             self.dataset = self.dataset = self.dataset.loc[mask]
 
         elif data == "training":
-            mask = self.testing_dataset["et"] >= et_threshold
+            mask = self.training_dataset["et"] >= et_threshold
             self.training_dataset = self.training_dataset.loc[mask]
 
         elif data == "testing":
@@ -265,12 +269,16 @@ class Experiment:
             self.dataset = self.dataset.loc[mask]
 
         elif data == "training":
-            mask = np.abs(self.testing_dataset["z"]) <= z_threshold
+            mask = np.abs(self.training_dataset["z"]) <= z_threshold
             self.training_dataset = self.training_dataset.loc[mask]
+            self.X_train = self.X_train[mask]
+            self.y_train = self.y_train[mask]
 
         elif data == "testing":
             mask = np.abs(self.testing_dataset["z"]) <= z_threshold
             self.testing_dataset = self.testing_dataset.loc[mask]
+            self.X_test = self.X_test[mask]
+            self.y_test = self.y_test[mask]
 
         else:
             raise ValueError("Invalid value for 'data' parameter")
