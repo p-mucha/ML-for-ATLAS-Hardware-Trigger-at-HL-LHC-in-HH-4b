@@ -2,6 +2,7 @@ import math
 from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pandas as pd
 import scienceplots
 from scipy.optimize import curve_fit
@@ -23,16 +24,17 @@ def calculate_confidence_range(errors_list, cl):
 
 
 def calculate_confidence_range2(errors_list, cl):
-    lim1 = np.percentile(errors_list, 50 + cl / 2)
-    lim2 = np.percentile(errors_list, 50 - cl / 2)
-
     if np.min(errors_list) == 0:
-        return (0, lim1)
+        lim = np.percentile(errors_list, cl)
+        return (0, lim)
 
     elif np.max(errors_list) == 0:
-        return (lim2, 0)
+        lim = np.percentile(errors_list, 100 - cl)
+        return (lim, 0)
 
     else:
+        lim1 = np.percentile(errors_list, 50 + cl / 2)
+        lim2 = np.percentile(errors_list, 50 - cl / 2)
         ran = (lim1 - lim2) / 2
         return (-ran, ran)
 
@@ -712,6 +714,23 @@ def par_to_det_emb2_new(z, eta_particle, eta_cell):
         eta_new = par_to_det_emb2(z=z, eta_particle=eta_particle, eta_cell=eta_new)
 
     return eta_new
+
+
+def save_table_df(dataframe, filename):
+    current_directory = os.getcwd()
+
+    # all tables should be saved to 'tables'
+    tables_directory = os.path.join(current_directory, "..", "tables")
+
+    # ensure that the "tables" directory exists, if not, create it
+    if not os.path.exists(tables_directory):
+        os.makedirs(tables_directory)
+
+    # full path
+    csv_path = os.path.join(tables_directory, filename)
+
+    # save to csv in 'tables' directory
+    dataframe.to_csv(csv_path, index=False)
 
 
 def QuadLinearEncoding(arr):

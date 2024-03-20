@@ -10,11 +10,11 @@ class BinFunction:
 
     def _compute_bin_edges(self, arr, bins, cl):
         # Compute histogram
-        # ran1, ran2 = ed.calculate_confidence_range2(arr, cl=cl)
-        # _, bin_edges = np.histogram(arr, bins=bins, range=(ran1, ran2))
+        ran1, ran2 = utils.calculate_confidence_range2(arr, cl=cl)
+        _, bin_edges = np.histogram(arr, bins=bins, range=(ran1, ran2))
 
-        ran = utils.calculate_confidence_interval(arr, cl=cl)
-        _, bin_edges = np.histogram(arr, bins=bins, range=(-ran, ran))
+        # ran = utils.calculate_confidence_interval(arr, cl=cl)
+        # _, bin_edges = np.histogram(arr, bins=bins, range=(-ran, ran))
         return bin_edges
 
     def bin_function(self, x):
