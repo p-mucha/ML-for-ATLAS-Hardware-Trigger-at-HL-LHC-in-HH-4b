@@ -1,4 +1,5 @@
 setup.py
+events_package/BinFunction.py
 events_package/Experiment.py
 events_package/__init__.py
 events_package/atlas_geo.py
