@@ -8,6 +8,11 @@ def get_Y_1(dataframe):
     return dataframe["z"].values
 
 
+def get_Y_2(dataframe):
+    """Creates targets for model training."""
+    return dataframe["z"].values.astype("float16")
+
+
 def get_X_1(dataframe):
     """
     Creates inputs for model training.

@@ -712,3 +712,36 @@ def par_to_det_emb2_new(z, eta_particle, eta_cell):
         eta_new = par_to_det_emb2(z=z, eta_particle=eta_particle, eta_cell=eta_new)
 
     return eta_new
+
+
+def QuadLinearEncoding(arr):
+    def quant_scheme(x):
+        if x < 0:
+            return 0
+
+        if x < 8000:
+            return int(x / 31.25)
+
+        elif x < 40000:
+            return 192 + int(x / 125)
+
+        elif x < 168000:
+            return 432 + int(x / 500)
+
+        elif x < 678000:
+            return 686 + int(x / 2000)
+
+        else:
+            return 1023
+
+    quantised = np.vectorize(quant_scheme)(arr).astype(np.int16)
+
+    assert np.all(quantised.shape == arr.shape)
+
+    return quantised
+
+
+def create_mapping(unique_elements_array):
+    mapping_dict = {value: idx for idx, value in enumerate(unique_elements_array)}
+
+    return mapping_dict
