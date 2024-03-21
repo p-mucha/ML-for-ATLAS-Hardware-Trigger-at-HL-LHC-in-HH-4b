@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
+import pickle
 import scienceplots
 from scipy.optimize import curve_fit
 from xgboost import Booster
@@ -757,3 +758,45 @@ def create_mapping(unique_elements_array):
     mapping_dict = {value: idx for idx, value in enumerate(unique_elements_array)}
 
     return mapping_dict
+
+def closest_value(input_value, array):
+    closest = None
+    min_difference = float("inf")  # Initialize with positive infinity
+
+    for value in array:
+        difference = abs(input_value - value)
+        if difference < min_difference:
+            min_difference = difference
+            closest = value
+
+    return closest
+
+
+def convert_values_to_float16(obj):
+    '''Rounds and converts to float16.'''
+    if isinstance(obj, dict):
+        return {key: np.float16(round(value, 5)) for key, value in obj.items()}
+    else:
+        return np.float16(round(obj, 5))
+    
+
+def import_bin_functions():
+    """Import mappings.pkl from quantisations directory."""
+    current_directory = os.getcwd()
+    quantisations_directory = os.path.join(current_directory, "..", "quantisations")
+
+    with open(quantisations_directory + "\\bin_functions.pkl", "rb") as f:
+        bin_functions = pickle.load(f)
+
+    return bin_functions
+
+
+def import_mappings():
+    '''Import mappings.pkl from quantisations directory.'''
+    current_directory = os.getcwd()
+    quantisations_directory = os.path.join(current_directory, "..", "quantisations")
+
+    with open(quantisations_directory + "\\mappings.pkl", "rb") as f:
+        mappings = pickle.load(f)
+
+    return mappings
