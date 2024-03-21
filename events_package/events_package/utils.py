@@ -17,13 +17,6 @@ def calculate_confidence_interval(errors_list, cl):
 
 
 def calculate_confidence_range(errors_list, cl):
-    lim1 = np.percentile(errors_list, 50 + cl / 2)
-    lim2 = np.percentile(errors_list, 50 - cl / 2)
-
-    return (lim2, lim1)
-
-
-def calculate_confidence_range2(errors_list, cl):
     if np.min(errors_list) == 0:
         lim = np.percentile(errors_list, cl)
         return (0, lim)

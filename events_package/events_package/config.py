@@ -1,6 +1,12 @@
 config_five_layers = {
     "layers": ["psb", "emb1", "emb2", "emb3", "hab1"],
-    "noise_thresholds": {"psb": 100, "emb1": 50, "emb2": 100, "emb3": 50, "hab1": 100},
+    "noise_thresholds": {
+        "psb": 0,
+        "emb1": 0,
+        "emb2": 0,
+        "emb3": 0,
+        "hab1": 0,
+    },
     "dimensions": {
         "psb": (7, 9),
         "emb1": (3, 17),
