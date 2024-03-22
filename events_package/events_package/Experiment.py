@@ -174,7 +174,9 @@ class Experiment:
                 [self.dataset, other.dataset],
                 ignore_index=True,
             )
-            return Experiment(full_df, config=self.config)
+            new_experiment = Experiment(full_df, config=self.config)
+            del full_df
+            return new_experiment
         else:
             raise TypeError(
                 "Unsupported operand type(s) for +: '{}' and '{}'".format(
