@@ -175,6 +175,7 @@ class Experiment:
                 ignore_index=True,
             )
             new_experiment = Experiment(full_df, config=self.config)
+            full_df = 0
             del full_df
             return new_experiment
         else:
@@ -388,6 +389,13 @@ class Experiment:
         self.y_pred = self.model.predict(dtest)
         mse = mean_squared_error(self.y_test, self.y_pred)
         logging.info(f"y_pred length: {len(self.y_pred)}, model tested, MSE: {mse}")
+
+    def test_model_old(self):
+        """Tests current self.model on self.X_test"""
+        dtest = xgb.DMatrix(self.X_test, label=self.y_test)
+        self.y_pred = self.model.predict(dtest)
+        mse = mean_squared_error(self.y_test, self.y_pred)
+        print(f"y_pred length: {len(self.y_pred)}, model tested, MSE: {mse}")
 
     def xgboost_hyperparameter_scan(self, param_grid, nodes_info=False):
         column_names = ["MSE"]

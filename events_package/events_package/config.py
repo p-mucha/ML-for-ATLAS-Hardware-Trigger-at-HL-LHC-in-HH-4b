@@ -119,7 +119,7 @@ config_jet_candidate = {
 
 config_two_layers_Zee = {
     "layers": ["emb1", "emb2"],
-    "noise_thresholds": {"emb1": 50, "emb2": 100},
+    "noise_thresholds": {"emb1": 0, "emb2": 0},
     "dimensions": {
         "emb1": (3, 17),
         "emb2": (7, 9),
