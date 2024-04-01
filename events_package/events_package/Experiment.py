@@ -484,8 +484,8 @@ class Experiment:
 
         plt.figure(figsize=figsize)
         plt.rcdefaults()
-        plt.xlabel("eta")
-        plt.ylabel("phi")
+        plt.xlabel(r'$\eta$', fontsize=12)
+        plt.ylabel(r'$\phi$', fontsize=12)
         plt.title(
             "Layer: "
             + layer
@@ -493,7 +493,7 @@ class Experiment:
         )
         plt.imshow(data, cmap="viridis", interpolation=None, origin="upper")
         colorbar = plt.colorbar()
-        colorbar.set_label("Energy [MeV]")  # Adding caption to colorbar
+        colorbar.set_label("Energy [MeV]", fontsize=12)  # Adding caption to colorbar
 
         # Modify the plt.xticks line to handle every second eta tick for 'emb1'
         if layer == "emb1":
@@ -510,9 +510,9 @@ class Experiment:
             method_name = f"plot_{layer}"
 
             if layer == "emb1":
-                figsize = (20, 3)
+                figsize = (12, 2.5)
             else:
-                figsize = (12, 8)
+                figsize = (7, 5)
 
             setattr(
                 self,
@@ -560,8 +560,8 @@ class Experiment:
             col = i % 3
 
             ax = axes[row, col]
-            ax.set_xlabel("eta")
-            ax.set_ylabel("phi")
+            ax.set_xlabel(r'$\eta$')
+            ax.set_ylabel(r'$\phi$')
             ax.set_title(
                 "Layer " + layer + f"; Event NO: {event_no}; Z = {self.z[index]:.2f}"
             )

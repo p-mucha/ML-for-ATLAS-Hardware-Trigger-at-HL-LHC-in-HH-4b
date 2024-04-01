@@ -33,26 +33,36 @@ def calculate_confidence_range(errors_list, cl):
         return (-ran, ran)
 
 
-def plot_predictions(Y_test, Y_pred):
+def plot_predictions(Y_test, Y_pred, binnum=None, figsize=None):
+    if binnum == None:
+        binnum = 150
+    if figsize == None:
+        figsize = (7, 5)
+
     with plt.style.context(["science", "notebook", "grid"]):
+        plt.figure(figsize=figsize)
         common_bins = np.linspace(
-            min(np.min(Y_pred), np.min(Y_test)), max(np.max(Y_pred), np.max(Y_test)), 50
+            min(np.min(Y_pred), np.min(Y_test)),
+            max(np.max(Y_pred), np.max(Y_test)),
+            binnum,
         )
 
-        # Plot histograms with common bin edges
+        # histograms with common bin edges
+        plt.hist(Y_test, bins=common_bins, density=False, histtype="step", label="True")
+
         plt.hist(
             Y_pred,
             bins=common_bins,
             density=False,
             histtype="step",
-            label="Predictions",
+            label="Predicted",
+            color="orange",
         )
-        plt.hist(Y_test, bins=common_bins, density=False, histtype="step", label="True")
 
-        plt.xlabel("z (mm)")
+        plt.xlabel("z [mm]")
         plt.ylabel("Occurances")
         plt.legend()
-        plt.title("Predicted vs True z histogram")
+        plt.title("Distributions of True and Predicted z")
         plt.show()
 
 
@@ -66,6 +76,7 @@ def plot_errors(
     binnum=None,
 ):
     with plt.style.context(["science", "notebook", "grid"]):
+        plt.figure(figsize=(7, 5))
         prediction_errors = Y_test - Y_pred.flatten()
 
         rms = np.sqrt(np.mean(np.square(prediction_errors)))
@@ -107,6 +118,7 @@ def plot_errors(
                 density=False,
                 histtype="step",
                 label="Errors",
+                color="k",
             )
 
         # find fwhm
@@ -144,30 +156,17 @@ def plot_errors(
             )
 
         elif xmax is not None:
-            # Plot RMS, FWHM, and cl% range as text
-            x_lim = xmax
+            low_lim = max(-xmax, np.min(prediction_errors))
             plt.text(
-                0.45 * x_lim,
-                0.7 * np.max(n),
+                0.96 * low_lim,
+                0.94 * np.max(n),
                 f"RMS: {rms:.3f}",
-                fontsize=16,
-                color="red",
+                fontsize=14,
+                color="black",
+                bbox=dict(
+                    facecolor="white", edgecolor="black", boxstyle="square,pad=0.5"
+                ),
             )
-            plt.text(
-                0.45 * x_lim,
-                0.6 * np.max(n),
-                f"FWHM: {fwhm:.3f}",
-                fontsize=16,
-                color="blue",
-            )
-            plt.text(
-                0.45 * x_lim,
-                0.5 * np.max(n),
-                cl + f"%: {confidence_interval:.3f}",
-                fontsize=16,
-                color="green",
-            )
-            plt.xlim(-x_lim, x_lim)
 
         else:
             # Plot RMS, FWHM, and cl% range as text
@@ -190,19 +189,18 @@ def plot_errors(
             )
             plt.xlim(-20, 20)
 
-        plt.legend()
-        plt.title("Histogram of prediction errors")
-        plt.xlabel("z_test - z_pred (mm)")
+        plt.title("Distribution of Model Prediction Errors")
+        plt.xlabel("True - Predicted z [mm]")
         plt.ylabel("Occurances")
         plt.show()
 
 
 def plot_corelation(Y_test, Y_pred, density=True, log_density=True, plot_line=True):
     with plt.style.context(["science", "notebook", "grid"]):
-        plt.figure(figsize=(10, 8))
+        plt.figure(figsize=(9, 6))
 
-        plt.xlabel("True z (mm)")
-        plt.ylabel("Predicted z (mm)")
+        plt.xlabel("True z [mm]")
+        plt.ylabel("Predicted z [mm]")
         correlation_coefficient = np.corrcoef(
             Y_pred.reshape(
                 Y_pred.shape[0],
@@ -215,23 +213,41 @@ def plot_corelation(Y_test, Y_pred, density=True, log_density=True, plot_line=Tr
 
         elif log_density == False:
             plt.hist2d(Y_test, Y_pred, bins=100, cmap="viridis")
-            plt.colorbar(label="Density")
+            plt.colorbar(label="Occurances")
 
         else:
             plt.hist2d(Y_test, Y_pred, bins=100, cmap="viridis", norm=LogNorm())
-            plt.colorbar(label="Density (log scale)")
+            plt.colorbar(label="Occurances")
 
+        # Add text with box background
+        text_location_x = 0.925 * np.min(Y_test)
+        text_location_y = 0.67 * np.max(Y_pred)
+        text = f"r = {correlation_coefficient:.3f}"
+
+        # Create a rectangle patch
+        bbox_props = dict(
+            boxstyle="square,pad=0.3", fc="white", ec="black", lw=1
+        )  # Adjusted lw parameter
         plt.text(
-            0.7 * np.max(Y_test),
-            -0.7 * np.max(Y_pred),
-            f"r: {correlation_coefficient:.4f}",
-            fontsize=18,
-            color="red",
+            text_location_x,
+            text_location_y,
+            text,
+            fontsize=14,
+            color="black",
+            bbox=bbox_props,
         )
-        if plot_line == True:
-            plt.plot(Y_test, Y_test, "-", color="red")
 
-        plt.title("Density plot of predicted vs true z")
+        if plot_line == True:
+            plt.plot(
+                np.sort(Y_test)[[0, -1]],
+                np.sort(Y_test)[[0, -1]],
+                "--",
+                color="black",
+                label="y = x",
+            )
+            plt.legend(loc="upper left")
+
+        plt.title("2d Histogram of Predicted vs True z")
         plt.show()
 
 
@@ -259,7 +275,7 @@ def fold_list(input_list):
         assert len(output_array) == len(part1) + 1
 
         output_array[0] = middle_element
-        output_array[1:] = part1 - part2
+        output_array[1:] = part2 - part1
 
     else:
         output_array = np.zeros(int(n / 2))
@@ -270,7 +286,7 @@ def fold_list(input_list):
         assert len(part1) == len(part2)
         assert len(output_array) == len(part1)
 
-        output_array[:] = part1 - part2
+        output_array[:] = part2 - part1
 
     return output_array
 
@@ -759,6 +775,7 @@ def create_mapping(unique_elements_array):
 
     return mapping_dict
 
+
 def closest_value(input_value, array):
     closest = None
     min_difference = float("inf")  # Initialize with positive infinity
@@ -773,12 +790,12 @@ def closest_value(input_value, array):
 
 
 def convert_values_to_float16(obj):
-    '''Rounds and converts to float16.'''
+    """Rounds and converts to float16."""
     if isinstance(obj, dict):
         return {key: np.float16(round(value, 5)) for key, value in obj.items()}
     else:
         return np.float16(round(obj, 5))
-    
+
 
 def import_bin_functions():
     """Import mappings.pkl from quantisations directory."""
@@ -792,7 +809,7 @@ def import_bin_functions():
 
 
 def import_mappings():
-    '''Import mappings.pkl from quantisations directory.'''
+    """Import mappings.pkl from quantisations directory."""
     current_directory = os.getcwd()
     quantisations_directory = os.path.join(current_directory, "..", "quantisations")
 
