@@ -1,0 +1,17 @@
+MSE,objective,max_depth,learning_rate,subsample,colsample_bytree,n_estimators,Nodes NO
+4397.4897,reg:squarederror,4,0.74,0.8,1.0,130,1948
+4400.7397,reg:squarederror,4,0.74,0.9,1.0,130,1949
+4424.1436,reg:squarederror,4,0.74,1.0,0.9,130,1949
+4431.5317,reg:squarederror,4,0.74,1.0,1.0,130,1948
+4436.2754,reg:squarederror,4,0.74,1.0,0.8,130,1948
+4436.7295,reg:squarederror,4,0.74,0.9,0.9,130,1950
+4444.568,reg:squarederror,4,0.74,0.8,0.9,130,1950
+4449.184,reg:squarederror,4,0.74,0.7,1.0,130,1947
+4454.9907,reg:squarederror,4,0.74,0.9,0.8,130,1948
+4466.7617,reg:squarederror,4,0.74,0.8,0.7,130,1944
+4467.428,reg:squarederror,4,0.74,0.7,0.9,130,1946
+4480.9595,reg:squarederror,4,0.74,1.0,0.7,130,1949
+4481.6035,reg:squarederror,4,0.74,0.7,0.7,130,1946
+4485.6567,reg:squarederror,4,0.74,0.8,0.8,130,1947
+4499.532,reg:squarederror,4,0.74,0.7,0.8,130,1943
+4508.0254,reg:squarederror,4,0.74,0.9,0.7,130,1949
