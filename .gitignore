@@ -1,3 +1,5 @@
 events_package/__pycache__
 
+events_package/events_package.egg-info/
+
 notebooks/AutogluonModels/

@@ -397,7 +397,7 @@ class Experiment:
         mse = mean_squared_error(self.y_test, self.y_pred)
         print(f"y_pred length: {len(self.y_pred)}, model tested, MSE: {mse}")
 
-    def xgboost_hyperparameter_scan(self, param_grid, nodes_info=False):
+    def xgboost_hyperparameter_scan(self, param_grid, nodes_info=False, normalise=True):
         column_names = ["MSE"]
         for param in param_grid[0]:
             column_names.append(param)
@@ -408,7 +408,7 @@ class Experiment:
         column_values = []
 
         for params in param_grid:
-            mse = self.train_xgboost_model(params)
+            mse = self.train_xgboost_model(params, normalise=normalise)
             values_toappend = [mse] + [params[param] for param in param_grid[0]]
 
             if nodes_info:
