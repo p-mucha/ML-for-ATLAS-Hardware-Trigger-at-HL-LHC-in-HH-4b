@@ -459,6 +459,7 @@ class Experiment:
         index,
         layer,
         figsize,
+        dpi=150,
     ):
         if layer not in self.layers:
             raise ValueError("Layer should be psb, emb1, emb2, emb3 or hab1.")
@@ -482,7 +483,7 @@ class Experiment:
 
         event_no = self.dataset["event_no"][index]
 
-        plt.figure(figsize=figsize)
+        plt.figure(figsize=figsize, dpi=dpi)
         plt.rcdefaults()
         plt.xlabel(r'$\eta$', fontsize=12)
         plt.ylabel(r'$\phi$', fontsize=12)

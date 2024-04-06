@@ -40,7 +40,7 @@ def plot_predictions(Y_test, Y_pred, binnum=None, figsize=None):
         figsize = (7, 5)
 
     with plt.style.context(["science", "notebook", "grid"]):
-        plt.figure(figsize=figsize)
+        plt.figure(figsize=figsize, dpi=150)
         common_bins = np.linspace(
             min(np.min(Y_pred), np.min(Y_test)),
             max(np.max(Y_pred), np.max(Y_test)),
@@ -76,7 +76,7 @@ def plot_errors(
     binnum=None,
 ):
     with plt.style.context(["science", "notebook", "grid"]):
-        plt.figure(figsize=(7, 5))
+        plt.figure(figsize=(7, 5), dpi=150)
         prediction_errors = Y_test - Y_pred.flatten()
 
         rms = np.sqrt(np.mean(np.square(prediction_errors)))
@@ -197,7 +197,7 @@ def plot_errors(
 
 def plot_corelation(Y_test, Y_pred, density=True, log_density=True, plot_line=True):
     with plt.style.context(["science", "notebook", "grid"]):
-        plt.figure(figsize=(9, 6))
+        plt.figure(figsize=(9, 6), dpi=150)
 
         plt.xlabel("True z [mm]")
         plt.ylabel("Predicted z [mm]")
